@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub Quiz</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+.container {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+}
+h1 {
+    text-align: center;
+    color: #2563eb;
+}
+#progress {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+.option {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+.option:hover {
+    background: #eef4ff;
+}
+.correct {
+    background: #c8f7c5;
+}
+.wrong {
+    background: #ffc9c9;
+}
+button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+button:disabled {
+    background: gray;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Git & GitHub Quiz</h1>
+
+<div id="quiz">
+<div id="progress"></div>
+<h2 id="question"></h2>
+<div id="options"></div>
+<button id="next" disabled>Next</button>
+</div>
+
+<div id="result" style="display:none;">
+<h2>Quiz Finished!</h2>
+<p id="score"></p>
+<button onclick="location.reload()">Restart Quiz</button>
+</div>
+
+</div>
+
+<script>
+const questions = [
+{
+q:"Which command creates a commit?",
+options:["git push","git commit","git clone","git pull"],
+answer:1
+},
+{
+q:"What is a Git branch?",
+options:[
+"A backup file",
+"A separate line of development",
+"A remote repository",
+"A folder"
+],
+answer:1
+},
+{
+q:"Which command uploads commits to GitHub?",
+options:["git push","git add","git merge","git stash"],
+answer:0
+},
+{
+q:"What is GitHub Copilot?",
+options:[
+"A web browser",
+"An AI coding assistant",
+"A programming language",
+"A database"
+],
+answer:1
+},
+{
+q:"What is a Pull Request used for?",
+options:[
+"Deleting code",
+"Reviewing and merging changes",
+"Installing Git",
+"Creating folders"
+],
+answer:1
+}
+];
+
+let current = 0;
+let score = 0;
+
+const progress = document.getElementById("progress");
+const question = document.getElementById("question");
+const options = document.getElementById("options");
+const next = document.getElementById("next");
+
+function loadQuestion() {
+    next.disabled = true;
+    progress.textContent = `Question ${current + 1} of ${questions.length} | Score: ${score}`;
+    question.textContent = questions[current].q;
+    options.innerHTML = "";
+
+    questions[current].options.forEach((text, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = text;
+
+        btn.onclick = () => {
+            document.querySelectorAll(".option").forEach(b => b.disabled = true);
+
+            if(index === questions[current].answer){
+                btn.classList.add("correct");
+                score++;
+            } else {
+                btn.classList.add("wrong");
+                document.querySelectorAll(".option")[questions[current].answer]
+                    .classList.add("correct");
+            }
+
+            progress.textContent = `Question ${current + 1} of ${questions.length} | Score: ${score}`;
+            next.disabled = false;
+        };
+
+        options.appendChild(btn);
+    });
+}
+
+next.onclick = () => {
+    current++;
+    if(current < questions.length){
+        loadQuestion();
+    } else {
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("result").style.display = "block";
+        document.getElementById("score").textContent =
+            `You scored ${score} out of ${questions.length}!`;
+    }
+};
+
+loadQuestion();
+</script>
+
+</body>
+</html>
